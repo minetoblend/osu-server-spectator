@@ -16,6 +16,7 @@ using osu.Game.Online;
 using osu.Server.Spectator.Authentication;
 using osu.Server.Spectator.Extensions;
 using osu.Server.Spectator.Hubs;
+using osu.Server.Spectator.Hubs.Editor;
 using osu.Server.Spectator.Hubs.Metadata;
 using osu.Server.Spectator.Hubs.Multiplayer;
 using osu.Server.Spectator.Hubs.Spectator;
@@ -110,6 +111,7 @@ namespace osu.Server.Spectator
                 endpoints.MapHub<SpectatorHub>("/spectator");
                 endpoints.MapHub<MultiplayerHub>("/multiplayer");
                 endpoints.MapHub<MetadataHub>("/metadata");
+                endpoints.MapHub<EditorHub>("/editor");
             });
 
             // Create shutdown manager singleton.
