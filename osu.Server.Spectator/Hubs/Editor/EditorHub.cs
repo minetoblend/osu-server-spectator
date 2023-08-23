@@ -127,7 +127,7 @@ public class EditorHub : StatefulUserHub<IEditorClient, EditorClientState>, IEdi
         }
     }
 
-    public Task SubmitCommands(SerializedEditorCommands commands)
+    public Task SubmitCommands(byte[] commands)
     {
         throw new System.NotImplementedException();
     }
