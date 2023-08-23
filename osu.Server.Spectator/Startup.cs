@@ -28,7 +28,17 @@ namespace osu.Server.Spectator
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSignalR(options => options.AddFilter<LoggingHubFilter>())
+            services.AddSignalR(options =>
+                    {
+                        options.AddFilter<LoggingHubFilter>();
+                        // TODO: Remove this
+                        options.EnableDetailedErrors = true;
+                    })
+                    .AddHubOptions<EditorHub>(options =>
+                    {
+                        // TODO: Figure out a way to not do this
+                        options.MaximumReceiveMessageSize = 1024 * 1024 * 50; // 50mb
+                    })
                     .AddMessagePackProtocol(options =>
                     {
                         // This is required for match type states/events, which are regularly sent as derived implementations where that type is not conveyed in the invocation signature itself.
@@ -111,7 +121,11 @@ namespace osu.Server.Spectator
                 endpoints.MapHub<SpectatorHub>("/spectator");
                 endpoints.MapHub<MultiplayerHub>("/multiplayer");
                 endpoints.MapHub<MetadataHub>("/metadata");
-                endpoints.MapHub<EditorHub>("/editor");
+                endpoints.MapHub<EditorHub>("/editor", options =>
+                {
+                    options.ApplicationMaxBufferSize = 1024 * 1024 * 50; // 50MB
+                    options.TransportMaxBufferSize = 1024 * 1024 * 50; // 50MB
+                });
             });
 
             // Create shutdown manager singleton.

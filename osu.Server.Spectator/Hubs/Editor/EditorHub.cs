@@ -18,17 +18,17 @@ public class EditorHub : StatefulUserHub<IEditorClient, EditorClientState>, IEdi
 {
     private readonly IDatabaseFactory databaseFactory;
     protected readonly EntityStore<ServerEditorRoom> Rooms;
-    protected readonly IEditorHubContext Context;
+    protected readonly EditorHubContext HubContext;
 
     //TODO: replace this with a database backed ID
-    private long nextRoomId = 1;
+    private static long nextRoomId = 1;
 
     public EditorHub(IDistributedCache cache, EntityStore<EditorClientState> users, IDatabaseFactory databaseFactory, EntityStore<ServerEditorRoom> rooms, IHubContext<EditorHub> context)
         : base(cache, users)
     {
         this.databaseFactory = databaseFactory;
         Rooms = rooms;
-        Context = new EditorHubContext(context, rooms, users);
+        HubContext = new EditorHubContext(context, rooms, users);
     }
 
     public Task LeaveRoom()
@@ -67,7 +67,7 @@ public class EditorHub : StatefulUserHub<IEditorClient, EditorClientState>, IEdi
                 throw new InvalidStateException($"Room {roomId} already exists.");
 
             roomUsage.Item = new ServerEditorRoom(
-                roomId, Context, new BeatmapSnapshot(beatmap.EncodedBeatmap), beatmap.Files);
+                roomId, HubContext, new BeatmapSnapshot(beatmap.EncodedBeatmap), beatmap.Files);
 
             roomUsage.Item.Users.Add(roomUser);
 
